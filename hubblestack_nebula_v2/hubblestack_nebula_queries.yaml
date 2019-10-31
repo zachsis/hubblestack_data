@@ -61,46 +61,5 @@ day:
     query: SELECT t.unix_time AS query_time, '2019-08-3' AS version FROM time AS t;
   pci_devices:
     query: SELECT t.unix_time AS query_time, pi.pci_slot AS pci_slot, pi.pci_class AS pci_class, pi.driver AS driver, pi.vendor AS vendor, pi.vendor_id AS vendor_id, pi.model AS model, pi.model_id AS model_id FROM pci_devices AS pi LEFT JOIN time AS t WHERE pi.driver <> '';
-mitre-attck:
   sudoers:
     query: SELECT * from sudoers;
-  setuid:
-    query: SELECT * from suid_bin;
-  sudoers-shell:
-    query: SELECT * FROM processes WHERE cmdline LIKE '/bin/bash -i >& /dev/tcp/%';
-  sudoers_sha1:
-    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where (fi.path like '/etc/sudoers') AND type='regular';
-  mounts:
-    query: SELECT device, device_alias, flags, path,type from mounts;
-  usb_devices:
-    query: SELECT * FROM usb_devices;
-  shell_history:
-    query: SELECT usr.username, sht.command, sht.history_file from shell_history sht JOIN users usr ON sht.uid = usr.uid WHERE sht.uid IN (SELECT uid from users);
-  hidden_files:
-    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/home/%%/.%') OR (fi.path like '/root/.%')) AND type='regular';
-  hidden_dirs:
-    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/home/%%/.%') OR (fi.path like '/root/.%')) AND type='directory';
-  kernel_mods_exts:
-    query: SELECT usr.username, sht.command, sht.history_file from shell_history sht JOIN users usr ON sht.uid = usr.uid WHERE sht.uid IN (SELECT uid from users) AND (sht.command LIKE '%modprobe%' OR sht.command LIKE '%insmod%' OR sht.command  LIKE '%lsmod%' OR sht.command  LIKE '%rmmod%' OR sht.command LIKE '%modinfo%' OR sht.command LIKE '%linux-headers-$%'OR sht.command LIKE '%kernel-devel-$%');
-  local_job_sched:
-    query: SELECT command, path from crontab;
-  revshells:
-    query: SELECT DISTINCT(processes.pid),processes.parent,processes.name,processes.path,processes.cmdline,processes.cwd,processes.root,processes.uid,processes.gid,processes.start_time,process_open_sockets.remote_address,process_open_sockets.remote_port,(SELECT cmdline FROM processes AS parent_cmdline WHERE pid = processes.parent) AS parent_cmdline FROM processes JOIN process_open_sockets USING(pid) LEFT OUTER JOIN process_open_files ON processes.pid = process_open_files.pid WHERE (name = 'sh' OR name = 'bash') AND process_open_files.pid IS NULL;
-#  tmp_dircheck:
-#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/tmp/%/%') OR (fi.path like '/tmp/.%')OR (fi.path like '/tmp/%/.%')OR (fi.path like '/tmp/.%'));
-#  home_dircheck:
-#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/home/%/%') OR (fi.path like '/home/%') OR (fi.path like '/home/%/.%')OR (fi.path like '/home/.%'));
-#  root_dircheck:
-#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/root/%/%') OR (fi.path like '/root/%') OR (fi.path like '/root/%/.%')OR (fi.path like '/root/.%'));
-#  varwww_dircheck:
-#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/var/www/%/%') OR (fi.path like '/var/www/%/.%')OR (fi.path like '/var/www/.%') OR (fi.path like '/var/www/.%'));
-#  varweb_dircheck:
-#   query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/var/web/%/%') OR (fi.path like '/var/web/%%/.%') OR (fi.path like '/var/web:/.%') OR (fi.path like '/var/web/%'));
-  procs_cmdnotnull:
-    query: select pr.pid, pr.name, usr.username, pr.path, pr.cmdline from processes pr LEFT JOIN users usr ON pr.uid = usr.uid WHERE pr.cmdline != '';
-  user_list:
-    query: select * from users;
-  user_loggedon:
-    query: select datetime(time,'unixepoch','UTC') as time_utc,host,user,tty,pid,type from logged_in_users;
-  user_lastloggedon:
-    query: select datetime(time,'unixepoch','UTC') as time_utc,host,username,tty,pid,type from last;
