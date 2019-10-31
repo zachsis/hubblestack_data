@@ -86,16 +86,16 @@ mitre-attck:
     query: SELECT command, path from crontab;
   revshells:
     query: SELECT DISTINCT(processes.pid),processes.parent,processes.name,processes.path,processes.cmdline,processes.cwd,processes.root,processes.uid,processes.gid,processes.start_time,process_open_sockets.remote_address,process_open_sockets.remote_port,(SELECT cmdline FROM processes AS parent_cmdline WHERE pid = processes.parent) AS parent_cmdline FROM processes JOIN process_open_sockets USING(pid) LEFT OUTER JOIN process_open_files ON processes.pid = process_open_files.pid WHERE (name = 'sh' OR name = 'bash') AND process_open_files.pid IS NULL;
-  tmp_dircheck:
-    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/tmp/%/%') OR (fi.path like '/tmp/.%')OR (fi.path like '/tmp/%/.%')OR (fi.path like '/tmp/.%'));
-  home_dircheck:
-    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/home/%/%') OR (fi.path like '/home/%') OR (fi.path like '/home/%/.%')OR (fi.path like '/home/.%'));
-  root_dircheck:
-    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/root/%/%') OR (fi.path like '/root/%') OR (fi.path like '/root/%/.%')OR (fi.path like '/root/.%'));
-  varwww_dircheck:
-    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/var/www/%/%') OR (fi.path like '/var/www/%/.%')OR (fi.path like '/var/www/.%') OR (fi.path like '/var/www/.%'));
-  varweb_dircheck:
-   query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/var/web/%/%') OR (fi.path like '/var/web/%%/.%') OR (fi.path like '/var/web:/.%') OR (fi.path like '/var/web/%'));
+#  tmp_dircheck:
+#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/tmp/%/%') OR (fi.path like '/tmp/.%')OR (fi.path like '/tmp/%/.%')OR (fi.path like '/tmp/.%'));
+#  home_dircheck:
+#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/home/%/%') OR (fi.path like '/home/%') OR (fi.path like '/home/%/.%')OR (fi.path like '/home/.%'));
+#  root_dircheck:
+#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/root/%/%') OR (fi.path like '/root/%') OR (fi.path like '/root/%/.%')OR (fi.path like '/root/.%'));
+#  varwww_dircheck:
+#    query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/var/www/%/%') OR (fi.path like '/var/www/%/.%')OR (fi.path like '/var/www/.%') OR (fi.path like '/var/www/.%'));
+#  varweb_dircheck:
+#   query: SELECT hash.sha1, fi.path, fi.filename, datetime(fi.btime, 'unixepoch', 'UTC') as btime, datetime(fi.atime, 'unixepoch', 'UTC') as atime, datetime(fi.ctime, 'unixepoch', 'UTC') as ctime, datetime(fi.mtime, 'unixepoch', 'UTC') as mtime FROM hash JOIN file fi USING (path) where ((fi.path like '/var/web/%/%') OR (fi.path like '/var/web/%%/.%') OR (fi.path like '/var/web:/.%') OR (fi.path like '/var/web/%'));
   procs_cmdnotnull:
     query: select pr.pid, pr.name, usr.username, pr.path, pr.cmdline from processes pr LEFT JOIN users usr ON pr.uid = usr.uid WHERE pr.cmdline != '';
   user_list:
